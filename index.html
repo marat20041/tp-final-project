@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Serre - Contrôle Web</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Contrôle d’une porte d’aération d’une serre</h1>
+
+        <div class="card">
+            <h2>État actuel</h2>
+            <p>Température : <span id="temp">--</span> °C</p>
+            <p>Lumière : <span id="light">--</span></p>
+            <p>Distance : <span id="distance">--</span> cm</p>
+            <p>Ouverture réelle : <span id="realOpening">--</span> %</p>
+            <p>Ouverture cible : <span id="targetOpening">--</span> %</p>
+            <p>Mode : <span id="mode">--</span></p>
+            <p>Moteur : <span id="motorState">--</span></p>
+            <p>Direction : <span id="direction">--</span></p>
+            <p>Vitesse : <span id="speed">--</span> tour/min</p>
+            <p class="alert">Alerte : <span id="alertText">Aucune</span></p>
+        </div>
+
+        <div class="card">
+            <h2>Commandes</h2>
+
+            <div class="buttons">
+                <button onclick="sendCommand('open')">Ouvrir</button>
+                <button onclick="sendCommand('close')">Fermer</button>
+            </div>
+
+            <div class="buttons">
+                <button onclick="setMode('Automatique')">Automatique</button>
+                <button onclick="setMode('Manuelle')">Manuelle</button>
+            </div>
+
+            <div class="slider-box">
+                <label for="targetSlider">Ouverture cible :</label>
+                <input type="range" id="targetSlider" min="0" max="100" value="50" />
+                <span id="sliderValue">50</span> %
+                <button onclick="sendTarget()">Envoyer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
