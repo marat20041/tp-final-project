@@ -16,61 +16,56 @@ slider.addEventListener("input", () => {
     sliderValue.textContent = slider.value;
 });
 
-// Fake data for now
-let serreState = {
-    temperature: 28.5,
-    light: 72,
-    distance: 15.4,
-    realOpening: 40,
-    targetOpening: 50,
-    mode: "Automatique",
-    motorState: "En marche",
-    direction: "Ouverture",
-    speed: 20,
-    alert: "Aucune"
-};
+async function loadState() {
+    try {
+        const response = await fetch("/api/state");
+        const state = await response.json();
 
-function renderState() {
-    tempEl.textContent = serreState.temperature;
-    lightEl.textContent = serreState.light;
-    distanceEl.textContent = serreState.distance;
-    realOpeningEl.textContent = serreState.realOpening;
-    targetOpeningEl.textContent = serreState.targetOpening;
-    modeEl.textContent = serreState.mode;
-    motorStateEl.textContent = serreState.motorState;
-    directionEl.textContent = serreState.direction;
-    speedEl.textContent = serreState.speed;
-    alertTextEl.textContent = serreState.alert;
+        tempEl.textContent = state.temperature;
+        lightEl.textContent = state.light;
+        distanceEl.textContent = state.distance;
+        realOpeningEl.textContent = state.realOpening;
+        targetOpeningEl.textContent = state.targetOpening;
+        modeEl.textContent = state.mode;
+        motorStateEl.textContent = state.motorState;
+        directionEl.textContent = state.direction;
+        speedEl.textContent = state.speed;
+        alertTextEl.textContent = state.alert;
+
+        slider.value = state.targetOpening;
+        sliderValue.textContent = state.targetOpening;
+    } catch (error) {
+        console.error("Erreur chargement état :", error);
+    }
 }
 
-function sendCommand(command) {
-    console.log("Commande envoyée :", command);
+async function sendCommand(command, value = null) {
+    try {
+        const response = await fetch("/api/command", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ command, value })
+        });
 
-    if (command === "open") {
-        serreState.targetOpening = 100;
-        serreState.mode = "Manuelle";
+        const result = await response.json();
+        console.log("Commande envoyée :", result);
+
+        await loadState();
+    } catch (error) {
+        console.error("Erreur envoi commande :", error);
     }
-
-    if (command === "close") {
-        serreState.targetOpening = 0;
-        serreState.mode = "Manuelle";
-    }
-
-    renderState();
 }
 
 function setMode(mode) {
-    console.log("Mode envoyé :", mode);
-    serreState.mode = mode;
-    renderState();
+    sendCommand("set_mode", mode);
 }
 
 function sendTarget() {
     const value = parseInt(slider.value);
-    console.log("Nouvelle ouverture cible :", value);
-    serreState.targetOpening = value;
-    serreState.mode = "Manuelle";
-    renderState();
+    sendCommand("set_target", value);
 }
 
-renderState();
+loadState();
+setInterval(loadState, 3000);
