@@ -1,13 +1,13 @@
-const tempEl = document.getElementById("temp");
-const lightEl = document.getElementById("light");
-const distanceEl = document.getElementById("distance");
-const realOpeningEl = document.getElementById("realOpening");
-const targetOpeningEl = document.getElementById("targetOpening");
-const modeEl = document.getElementById("mode");
-const motorStateEl = document.getElementById("motorState");
-const directionEl = document.getElementById("direction");
-const speedEl = document.getElementById("speed");
-const alertTextEl = document.getElementById("alertText");
+const temp = document.getElementById("temp");
+const light = document.getElementById("light");
+const distance = document.getElementById("distance");
+const realOpening = document.getElementById("realOpening");
+const targetOpening = document.getElementById("targetOpening");
+const mode = document.getElementById("mode");
+const motorState = document.getElementById("motorState");
+const direction = document.getElementById("direction");
+const speed = document.getElementById("speed");
+const alertText = document.getElementById("alertText");
 
 const slider = document.getElementById("targetSlider");
 const sliderValue = document.getElementById("sliderValue");
@@ -21,16 +21,16 @@ async function loadState() {
         const response = await fetch("/api/state");
         const state = await response.json();
 
-        tempEl.textContent = state.temperature;
-        lightEl.textContent = state.light;
-        distanceEl.textContent = state.distance;
-        realOpeningEl.textContent = state.realOpening;
-        targetOpeningEl.textContent = state.targetOpening;
-        modeEl.textContent = state.mode;
-        motorStateEl.textContent = state.motorState;
-        directionEl.textContent = state.direction;
-        speedEl.textContent = state.speed;
-        alertTextEl.textContent = state.alert;
+        temp.textContent = state.temperature;
+        light.textContent = state.light;
+        distance.textContent = state.distance;
+        realOpening.textContent = state.realOpening;
+        targetOpening.textContent = state.targetOpening;
+        mode.textContent = state.mode;
+        motorState.textContent = state.motorState;
+        direction.textContent = state.direction;
+        speed.textContent = state.speed;
+        alertText.textContent = state.alert;
 
         slider.value = state.targetOpening;
         sliderValue.textContent = state.targetOpening;
@@ -60,11 +60,13 @@ async function sendCommand(command, value = null) {
 
 function setMode(mode) {
     sendCommand("set_mode", mode);
+    console.log("Mode changé :", mode);
 }
 
 function sendTarget() {
     const value = parseInt(slider.value);
     sendCommand("set_target", value);
+    console.log("Target envoyé :", value);
 }
 
 loadState();
