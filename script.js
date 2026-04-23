@@ -1,14 +1,13 @@
 const temp = document.getElementById("temp");
 const light = document.getElementById("light");
 const distance = document.getElementById("distance");
-const realOpening = document.getElementById("realOpening");
-const targetOpening = document.getElementById("targetOpening");
+const doorOpening = document.getElementById("doorOpening");
+const doorTargetOpening = document.getElementById("doorTargetOpening");
 const mode = document.getElementById("mode");
 const motorState = document.getElementById("motorState");
 const direction = document.getElementById("direction");
 const speed = document.getElementById("speed");
 const alertText = document.getElementById("alertText");
-
 const slider = document.getElementById("targetSlider");
 const sliderValue = document.getElementById("sliderValue");
 
@@ -24,16 +23,17 @@ async function loadState() {
         temp.textContent = state.temperature;
         light.textContent = state.light;
         distance.textContent = state.distance;
-        realOpening.textContent = state.realOpening;
-        targetOpening.textContent = state.targetOpening;
+        doorOpening.textContent = state.doorOpening;
+        doorTargetOpening.textContent = state.doorTargetOpening;
         mode.textContent = state.mode;
         motorState.textContent = state.motorState;
         direction.textContent = state.direction;
         speed.textContent = state.speed;
         alertText.textContent = state.alert;
 
-        slider.value = state.targetOpening;
-        sliderValue.textContent = state.targetOpening;
+        slider.value = state.doorTargetOpening;
+        sliderValue.textContent = state.doorTargetOpening;
+
     } catch (error) {
         console.error("Erreur chargement état :", error);
     }
@@ -41,6 +41,8 @@ async function loadState() {
 
 async function sendCommand(command, value = null) {
     try {
+        console.log("Envoi commande :", command, value);
+
         const response = await fetch("http://localhost:7071/api/command", {
             method: "POST",
             headers: {
@@ -48,6 +50,8 @@ async function sendCommand(command, value = null) {
             },
             body: JSON.stringify({ command, value })
         });
+
+        console.log("Réponse reçue :", response.status, response.statusText);
 
         const result = await response.json();
         console.log("Commande envoyée :", result);
@@ -64,6 +68,7 @@ function setMode(mode) {
 }
 
 function sendTarget() {
+    console.log("Envoi target :", slider.value);
     const value = parseInt(slider.value);
     sendCommand("set_target", value);
     console.log("Target envoyé :", value);
