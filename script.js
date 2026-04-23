@@ -18,7 +18,7 @@ slider.addEventListener("input", () => {
 
 async function loadState() {
     try {
-        const response = await fetch("/api/state");
+        const response = await fetch("http://localhost:7071/api/state");
         const state = await response.json();
 
         tempEl.textContent = state.temperature;
@@ -41,7 +41,7 @@ async function loadState() {
 
 async function sendCommand(command, value = null) {
     try {
-        const response = await fetch("/api/command", {
+        const response = await fetch("http://localhost:7071/api/command", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

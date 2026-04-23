@@ -48,3 +48,24 @@ __pycache__/
 __blobstorage__
 __queuestorage__
 __azurite_db*__.json
+
+# MySQL Docker data
+database/mydb/
+mydb/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# Azure Functions local secrets
+api/local.settings.json
+
+# Misc local database files
+*.db
+
+database/mydb/
+mydb/
+.vscode/
+!.vscode/extensions.json
+api/local.settings.json
+*.db
