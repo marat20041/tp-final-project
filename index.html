@@ -12,7 +12,7 @@
     <div class="container">
         <h1>Contrôle d’une porte d’aération d’une serre</h1>
 
-        /* Section d'affichage des données et de contrôle */
+        <!-- Affichage de l'état actuel -->
         <div class="card">
             <h2>État actuel</h2>
             <p>Température : <span id="temp">--</span> °C</p>
@@ -30,29 +30,30 @@
         <div class="card">
             <h2>Commandes</h2>
 
-            /* Boutons de contrôle */
+            <!-- Boutons de contrôle -->
             <div class="buttons">
                 <button onclick="sendCommand('open')">Ouvrir</button>
                 <button onclick="sendCommand('close')">Fermer</button>
             </div>
 
-            /* Boutons de mode */
+            <!-- Boutons de mode automatique et manuel -->
             <div class="buttons">
                 <button onclick="setMode('Automatique')">Automatique</button>
                 <button onclick="setMode('Manuelle')">Manuelle</button>
             </div>
 
-            /* Slider pour l'ouverture cible */
+            <!-- Slider pour l'ouverture cible -->
             <div class="slider-box">
-                <label for="targetSlider">Ouverture cible :</label>
+                <label for="targetSlider"> Ouverture cible :</label>
                 <input type="range" id="targetSlider" min="0" max="100" value="50" />
                 <span id="sliderValue">50</span> %
-                <button onclick="sendTarget()">Envoyer</button>
+
+                <!-- Bouton pour envoyer la nouvelle ouverture cible -->
+                <button style="margin: 10px 0;" onclick="sendTarget()">Envoyer</button>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
