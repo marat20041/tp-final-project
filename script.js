@@ -17,22 +17,23 @@ slider.addEventListener("input", () => {
 
 async function loadState() {
     try {
-        const response = await fetch("http://localhost:7071/api/state");
+        const response = await fetch("/api/state");
         const state = await response.json();
 
         temp.textContent = state.temperature;
         light.textContent = state.light;
         distance.textContent = state.distance;
-        doorOpening.textContent = state.doorOpening;
-        doorTargetOpening.textContent = state.doorTargetOpening;
+        doorOpening.textContent = state.realOpening;
+        doorTargetOpening.textContent = state.targetOpening;
         mode.textContent = state.mode;
         motorState.textContent = state.motorState;
         direction.textContent = state.direction;
         speed.textContent = state.speed;
         alertText.textContent = state.alert;
 
-        slider.value = state.doorTargetOpening;
-        sliderValue.textContent = state.doorTargetOpening;
+        slider.value = state.targetOpening;
+        sliderValue.textContent = state.targetOpening;
+
         console.log("État chargé :", state);
     } catch (error) {
         console.error("Erreur chargement état :", error);
@@ -43,7 +44,7 @@ async function sendCommand(command, value = null) {
     try {
         console.log("Envoi commande :", command, value);
 
-        const response = await fetch("http://localhost:7071/api/command", {
+        const response = await fetch("/api/command", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -62,16 +63,15 @@ async function sendCommand(command, value = null) {
     }
 }
 
-function setMode(mode) {
-    sendCommand("set_mode", mode);
-    console.log("Mode changé :", mode);
+function setMode(newMode) {
+    sendCommand("set_mode", newMode);
+    console.log("Mode changé :", newMode);
 }
 
 function sendTarget() {
-    console.log("Envoi target :", slider.value);
     const value = parseInt(slider.value);
+    console.log("Envoi target :", value);
     sendCommand("set_target", value);
-    console.log("Target envoyé :", value);
 }
 
 loadState();

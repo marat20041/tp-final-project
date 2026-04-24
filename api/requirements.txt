@@ -4,3 +4,4 @@
 
 azure-functions
 mysql-connector-python
+azure-iot-hub

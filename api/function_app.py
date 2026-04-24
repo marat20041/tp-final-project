@@ -1,4 +1,5 @@
 import json
+from azure.iot.hub import IoTHubRegistryManager
 import azure.functions as func
 import mysql.connector
 
@@ -11,9 +12,23 @@ DB_CONFIG = {
     "database": "serre_iot"
 }
 
+IOTHUB_CONNECTION_STRING = "HostName=serre-iot.azure-devices.net;SharedAccessKeyName=service;SharedAccessKey=uXj90GY6oAdzObhMOT3ScXd/CzQ7b9KjFAIoTAmplpU="
+DEVICE_ID = "serre-pi-1"
+
 
 def get_db_connection():
     return mysql.connector.connect(**DB_CONFIG)
+
+
+def send_command_to_device(command: str, value=None):
+    registry_manager = IoTHubRegistryManager(IOTHUB_CONNECTION_STRING)
+
+    payload = {
+        "command": command,
+        "value": value
+    }
+
+    registry_manager.send_c2d_message(DEVICE_ID, json.dumps(payload))
 
 
 @app.route(route="state", methods=["GET"])
@@ -103,19 +118,33 @@ def post_command(req: func.HttpRequest) -> func.HttpResponse:
 
         command_type = None
         command_value = None
+        iot_command = None
+        iot_value = value
 
         if command == "open":
             command_type = "set_target"
             command_value = "100"
+            iot_command = "set_target"
+            iot_value = 100
+
         elif command == "close":
             command_type = "set_target"
             command_value = "0"
+            iot_command = "set_target"
+            iot_value = 0
+
         elif command == "set_mode":
             command_type = "set_mode"
             command_value = str(value)
+            iot_command = "mode"
+            iot_value = str(value)
+
         elif command == "set_target":
             command_type = "set_target"
             command_value = str(value)
+            iot_command = "set_target"
+            iot_value = int(value)
+
         else:
             return func.HttpResponse(
                 json.dumps({"error": "Commande invalide"}),
@@ -140,12 +169,19 @@ def post_command(req: func.HttpRequest) -> func.HttpResponse:
         cursor.close()
         conn.close()
 
+        send_command_to_device(iot_command, iot_value)
+
         return func.HttpResponse(
             json.dumps({
                 "success": True,
                 "saved_command": {
                     "command_type": command_type,
                     "command_value": command_value
+                },
+                "iot_message_sent": {
+                    "command": iot_command,
+                    "value": iot_value,
+                    "device_id": DEVICE_ID
                 }
             }),
             mimetype="application/json",
