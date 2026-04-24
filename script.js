@@ -33,7 +33,7 @@ async function loadState() {
 
         slider.value = state.doorTargetOpening;
         sliderValue.textContent = state.doorTargetOpening;
-
+        console.log("État chargé :", state);
     } catch (error) {
         console.error("Erreur chargement état :", error);
     }
